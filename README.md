@@ -10,11 +10,11 @@
 
     - **Client Mode**
 
-        Capture camera video and send stream to server side
+        Capture camera video and send stream to server side.
 
     - **Server Mode** 
 
-        Receive tcp stream and display the video to screen, along with network speed and ping
+        Receive tcp stream and display the video to screen, along with network speed and ping.
 
 - **Connection-Error Handle**
 
@@ -30,17 +30,33 @@
 
 - **Speed & Ping Monitoring**
 
-    Draw current **network speed** and **ping** directly to the video frame
+    Draw current **network speed** and **ping** directly to the video frame.
 
 - **Thread Safe**
 
     streamera uses golang as the main programming language: goroutine, channel and mutex are widely used in streamera. Thus streamera has high profermance and stability while keeping thread safe.
 
-    
-
 ## How to Install
 
 streamera requires [OpenCV](https://opencv.org/) as computer vision library and [GoCV](https://github.com/hybridgroup/gocv) as golang bindings.
+
+### MacOS
+
+Install **OpenCV**, **pkg-config**
+
+```bash
+brew install opencv pkg-config
+```
+
+Install **GoCV**
+
+```bash
+go get -u -d gocv.io/x/gocv
+```
+
+Done!
+
+### Linux or Windows
 
 Please check [Getting Start :: GoCV](https://gocv.io/getting-started/) for more information.
 

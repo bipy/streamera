@@ -53,10 +53,10 @@ func RunClient(client *Client) {
 
     go handleSend(client)
 
-    img := gocv.NewMat()
+    mat := gocv.NewMat()
     for {
-        client.Camera.Read(&img)
-        client.SendQueue <- img.ToBytes()
+        client.Camera.Read(&mat)
+        client.SendQueue <- encodeImage(&mat)
         gocv.WaitKey(1)
     }
 }

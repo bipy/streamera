@@ -1,6 +1,7 @@
 package server
 
 import (
+    "bytes"
     "fmt"
     "gocv.io/x/gocv"
     "image"
@@ -13,7 +14,7 @@ import (
 type Server struct {
     TCPListener      net.Listener
     TCPListenerMutex sync.Mutex
-    Frame            []byte
+    Frame            *bytes.Buffer
     FrameMutex       sync.RWMutex
     Counter          *SpeedCounter
 }
@@ -29,11 +30,12 @@ func NewServer(ip net.IP, port int) (*Server, error) {
     }
 
     counter := NewSpeedCounter()
+    buf := new(bytes.Buffer)
 
     server := &Server{
         TCPListener:      tcpListener,
         TCPListenerMutex: sync.Mutex{},
-        Frame:            make([]byte, common.FramePacketSize),
+        Frame:            buf,
         FrameMutex:       sync.RWMutex{},
         Counter:          counter,
     }
@@ -56,9 +58,8 @@ func RunServer(server *Server) {
     window := gocv.NewWindow("Streaming")
     for {
         server.FrameMutex.RLock()
-        img, err := gocv.NewMatFromBytes(common.Height, common.Width, gocv.MatTypeCV8UC3, server.Frame)
+        mat, err := gocv.IMDecode(server.Frame.Bytes(), gocv.IMReadUnchanged)
         if err != nil {
-            fmt.Println(common.Red(err.Error()))
             server.FrameMutex.RUnlock()
             continue
         }
@@ -67,7 +68,7 @@ func RunServer(server *Server) {
         curPing := server.Counter.PingPerSecond
         server.Counter.Mutex.RUnlock()
         gocv.PutText(
-            &img,
+            &mat,
             fmt.Sprintf("Speed: %s", getHumanReadableSpeed(curSpeed)),
             image.Point{X: 50, Y: 50},
             gocv.FontHersheySimplex,
@@ -76,7 +77,7 @@ func RunServer(server *Server) {
             3,
         )
         gocv.PutText(
-            &img,
+            &mat,
             fmt.Sprintf("Ping: %s", getHumanReadablePing(curPing)),
             image.Point{X: 50, Y: 100},
             gocv.FontHersheySimplex,
@@ -84,9 +85,9 @@ func RunServer(server *Server) {
             color.RGBA{R: 255, G: 0, B: 0, A: 0},
             3,
         )
-        window.IMShow(img)
+        window.IMShow(mat)
         window.WaitKey(1)
-        _ = img.Close()
+        _ = mat.Close()
         server.FrameMutex.RUnlock()
     }
 }

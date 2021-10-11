@@ -2,6 +2,7 @@ package server
 
 import (
     "bufio"
+    "bytes"
     "encoding/binary"
     "fmt"
     "io"
@@ -38,6 +39,7 @@ func handleConn(server *Server, conn net.Conn) {
     reader := bufio.NewReader(conn)
 
     timeStamp := make([]byte, common.TimeStampPacketSize)
+    contentLength := make([]byte, common.ContentLengthPacketSize)
 
     for {
         _, err := io.ReadFull(reader, timeStamp)
@@ -48,17 +50,31 @@ func handleConn(server *Server, conn net.Conn) {
         curTime := time.Now().UnixMicro()
         recvTime := int64(binary.LittleEndian.Uint64(timeStamp))
 
-        server.FrameMutex.Lock()
-        _, err = io.ReadFull(reader, server.Frame)
+        _, err = io.ReadFull(reader, contentLength)
         if err != nil {
             fmt.Println(common.Red(conn.RemoteAddr().String() + " Down! " + err.Error()))
             break
         }
+
+        length := int64(binary.LittleEndian.Uint64(contentLength))
+
+        buf := make([]byte, length)
+        _, err = io.ReadFull(reader, buf)
+        if err != nil {
+            fmt.Println(common.Red(conn.RemoteAddr().String() + " Down! " + err.Error()))
+            break
+        }
+
+        server.FrameMutex.Lock()
+        server.Frame = new(bytes.Buffer)
+        server.Frame.Write(buf)
         server.FrameMutex.Unlock()
 
         server.Counter.Mutex.Lock()
         server.Counter.PingRealTime = curTime - recvTime
-        server.Counter.PktCount++
+        server.Counter.ByteCount += length + common.HeadPacketSize
         server.Counter.Mutex.Unlock()
     }
 }
+
+

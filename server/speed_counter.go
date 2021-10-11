@@ -2,13 +2,12 @@ package server
 
 import (
     "fmt"
-    "streamera/common"
     "sync"
     "time"
 )
 
 type SpeedCounter struct {
-    PktCount       int64
+    ByteCount      int64
     LastTime       int64
     SpeedPerSecond int64
     PingRealTime   int64
@@ -18,7 +17,7 @@ type SpeedCounter struct {
 
 func NewSpeedCounter() *SpeedCounter {
     counter := &SpeedCounter{
-        PktCount:       0,
+        ByteCount:      0,
         LastTime:       time.Now().UnixMicro(),
         SpeedPerSecond: 0,
         PingRealTime:   1000,
@@ -44,7 +43,7 @@ func getHumanReadablePing(ping int64) string {
 
 func calcSpeed(counter *SpeedCounter) {
     counter.Mutex.RLock()
-    lastCount := counter.PktCount
+    lastCount := counter.ByteCount
     lastTime := time.Now().UnixMicro()
     counter.Mutex.RUnlock()
     for {
@@ -52,8 +51,8 @@ func calcSpeed(counter *SpeedCounter) {
 
         counter.Mutex.Lock()
         curTime := time.Now().UnixMicro()
-        curCount := counter.PktCount
-        counter.SpeedPerSecond = (curCount - lastCount) * common.ChunkSize * 8 * time.Second.Microseconds() / (curTime - lastTime)
+        curCount := counter.ByteCount
+        counter.SpeedPerSecond = (curCount - lastCount) * 8 * time.Second.Microseconds() / (curTime - lastTime)
         counter.Mutex.Unlock()
         lastTime, lastCount = curTime, curCount
     }

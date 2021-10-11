@@ -39,14 +39,19 @@ func handleSend(client *Client) {
 func pack(frame []byte) []byte {
     // ------ Packet ------
     // timestamp (8 bytes)
-    // content (2,764,800 bytes)
+    // content-length (8 bytes)
+    // content (content-length bytes)
     // ------  End   ------
 
     timePkt := make([]byte, common.TimeStampPacketSize)
     binary.LittleEndian.PutUint64(timePkt, uint64(time.Now().UnixMicro()))
 
+    contentLengthPkt := make([]byte, common.ContentLengthPacketSize)
+    binary.LittleEndian.PutUint64(contentLengthPkt, uint64(len(frame)))
+
     var pkt []byte
     pkt = append(pkt, timePkt...)
+    pkt = append(pkt, contentLengthPkt...)
     pkt = append(pkt, frame...)
 
     return pkt

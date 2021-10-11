@@ -36,6 +36,10 @@
 
         To be simple, When current TCP connnection is lost, the server will wait for the next  incoming connection and start over the video streaming.
 
+- **Encoded Stream**
+
+    Use `jpeg` library to encode each frame instead of the raw RGB stream
+
 - **Speed & Ping Monitoring**
 
     Draw current **network speed** and **ping** directly to the video frame.
@@ -50,7 +54,7 @@ streamera requires [OpenCV](https://opencv.org/) as computer vision library and 
 
 ### MacOS
 
-Install **OpenCV**, **pkg-config**
+Install **OpenCV** and **pkg-config**
 
 ```bash
 brew install opencv pkg-config
@@ -62,39 +66,46 @@ Install **GoCV**
 go get -u -d gocv.io/x/gocv
 ```
 
-Done!
-
 ### Linux or Windows
 
 Please check [Getting Start :: GoCV](https://gocv.io/getting-started/) for more information.
 
-
-
-## Usage
-
-Clone this repo:
+### Build
 
 ```bash
 git clone git@github.com:bipy/streamera.git
-```
-
-Build streamera:
-
-```bash
 cd streamera
 go build
 ```
 
-To run as server mode:
+## Usage
+
+Run as server mode on `127.0.0.1:6666`:
 
 ```bash
 ./streamera -m server
 ```
 
-To run as client mode:
+Run as client mode on `127.0.0.1:6666`:
 
 ```bash
 ./streamera -m client
+```
+
+Specify host & port:
+
+```bash
+./streamera -m server -h 127.0.0.1 -p 6667
+```
+
+```bash
+./streamera -m client -h 127.0.0.1 -p 6667
+```
+
+Use the configuration:
+
+```bash
+./streamera -c config.json
 ```
 
 

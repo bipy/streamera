@@ -1,29 +1,52 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"streamera/common"
+    "encoding/json"
+    "flag"
+    "fmt"
+    "io/ioutil"
+    "streamera/common"
 )
 
-type configuration struct {
-	Ip   string `json:"ip"`
-	Port int    `json:"port"`
-	Type string `json:"type"`
+var Config *Configuration
+
+type Configuration struct {
+    Mode string `json:"mode"`
+    Ip   string `json:"ip"`
+    Port int    `json:"port"`
 }
 
-func getConfig(configPath string) (*configuration, error) {
-	jsonBuf, err := ioutil.ReadFile(configPath)
-	if err != nil {
-		fmt.Println(common.Red("Load Config File Failed!"))
-		return nil, err
-	}
+func init() {
+    flag.Usage = usage
+    modePtr := flag.String("m", "", "run mode: \"server\" or \"client\"")
+    hostPtr := flag.String("h", "127.0.0.1", "Host")
+    portPtr := flag.Int("p", 6666, "Port")
+    configPathPtr := flag.String("c", "", "Specific configuration file")
+    flag.Parse()
 
-	config := configuration{}
-	if err := json.Unmarshal(jsonBuf, &config); err != nil {
-		fmt.Println(common.Red("Parse Json Failed!"))
-		return nil, err
-	}
-	return &config, nil
+    if *configPathPtr == "" {
+        Config = &Configuration{
+            Mode: *modePtr,
+            Ip:   *hostPtr,
+            Port: *portPtr,
+        }
+    } else {
+        Config = parseJsonConfig(*configPathPtr)
+    }
 }
+
+func parseJsonConfig(configPath string) *Configuration {
+    jsonBuf, err := ioutil.ReadFile(configPath)
+    if err != nil {
+        fmt.Println(common.Red("Load Config File Failed!"))
+        panic(err)
+    }
+
+    c := Configuration{}
+    if err := json.Unmarshal(jsonBuf, &c); err != nil {
+        fmt.Println(common.Red("Parse Json Failed!"))
+        panic(err)
+    }
+    return &c
+}
+

@@ -28,13 +28,13 @@
 
     - **Client Mode**
 
-        streamera client will try to reconnect to the server every 3 second when TCP connection is lost. And the maximum bufferd size is 180 frames, which is probably up to 6 seconds of the video.
+        streamera client will try to reconnect to the server every 3 second when TCP connection is lost. And the maximum buffered size is 180 frames, which is probably up to 6 seconds of the video.
 
     - **Server Mode**
 
         streamera server will continuously serve the incoming tcp connection, but the limit is set up to 1 client at the same time, which means **only one** video window will be shown during streamera server running. 
 
-        To be simple, When current TCP connnection is lost, the server will wait for the next  incoming connection and start over the video streaming.
+        To be simple, When current TCP connection is lost, the server will wait for the next  incoming connection and start over the video streaming.
 
 - **Encoded Stream**
 
@@ -46,7 +46,7 @@
 
 - **Thread Safe**
 
-    streamera uses golang as the main programming language: goroutine, channel and mutex are widely used in streamera. Thus streamera has high profermance and stability while keeping thread safe.
+    streamera uses golang as the main programming language: goroutine, channel and mutex are widely used in streamera. Thus, streamera has high performance and stability while keeping thread safe.
 
 ## How to Install
 

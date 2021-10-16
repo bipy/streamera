@@ -5,33 +5,24 @@ import (
     "fmt"
 )
 
-type Color struct {
-    font       int
-    background int
-    display    int
-}
+type Color int
 
-var (
-    RED = Color{font: 31, background: 40, display: 1}
-
-    GREEN = Color{font: 32, background: 40, display: 1}
-
-    YELLOW = Color{font: 33, background: 40, display: 1}
-
-    BLUE = Color{font: 34, background: 40, display: 1}
+const (
+    BLACK  = 30
+    RED    = 31
+    GREEN  = 32
+    YELLOW = 33
+    BLUE   = 34
+    PURPLE = 35
+    CYAN   = 36
+    GRAY   = 37
 )
 
 func getColorStr(s string, color Color) (string, error) {
-    if color.font < 30 || color.font > 37 {
+    if color < 30 || color > 37 {
         return "", errors.New("font [30, 37]")
     }
-    if color.background < 40 || color.background > 47 {
-        return "", errors.New("background [40, 47]")
-    }
-    if color.display < 0 || color.display > 8 || color.display == 2 || color.display == 3 || color.display == 6 {
-        return "", errors.New("display {0, 1, 4, 5, 7, 8}")
-    }
-    rt := fmt.Sprintf("\033[%d;%d;%dm%s\033[0m", color.display, color.font, color.background, s)
+    rt := fmt.Sprintf("\033[%dm%s\033[0m", color, s)
     return rt, nil
 }
 
@@ -41,6 +32,10 @@ func GetColorStr(s string, color Color) string {
         panic(err)
     }
     return rt
+}
+
+func Black(s string) string {
+    return GetColorStr(s, BLACK)
 }
 
 func Green(s string) string {
@@ -57,4 +52,16 @@ func Yellow(s string) string {
 
 func Blue(s string) string {
     return GetColorStr(s, BLUE)
+}
+
+func Purple(s string) string {
+    return GetColorStr(s, PURPLE)
+}
+
+func Cyan(s string) string {
+    return GetColorStr(s, CYAN)
+}
+
+func Gray(s string) string {
+    return GetColorStr(s, GRAY)
 }

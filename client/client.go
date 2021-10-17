@@ -13,6 +13,7 @@ type Client struct {
     TCPConn    *net.TCPConn
     Camera     *gocv.VideoCapture
     SendQueue  chan []byte
+    TimeDiff   int64
 }
 
 func NewClient(ip net.IP, port int, deviceID int) (*Client, error) {
@@ -38,6 +39,7 @@ func NewClient(ip net.IP, port int, deviceID int) (*Client, error) {
         TCPConn:    conn,
         Camera:     cam,
         SendQueue:  sendQueue,
+        TimeDiff:   0,
     }
 
     return client, nil
@@ -51,6 +53,7 @@ func RunClient(client *Client) {
         }
     }(client.TCPConn)
 
+    go handleReceive(client)
     go handleSend(client)
 
     mat := gocv.NewMat()

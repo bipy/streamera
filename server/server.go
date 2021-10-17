@@ -53,7 +53,7 @@ func RunServer(server *Server) {
 
     go runListener(server)
     go calcSpeed(server.Counter)
-    go updatePing(server.Counter)
+    go updateLatency(server.Counter)
 
     window := gocv.NewWindow("Streaming")
     for {
@@ -63,9 +63,10 @@ func RunServer(server *Server) {
             server.FrameMutex.RUnlock()
             continue
         }
+        server.FrameMutex.RUnlock()
         server.Counter.Mutex.RLock()
         curSpeed := server.Counter.SpeedPerSecond
-        curPing := server.Counter.PingPerSecond
+        curPing := server.Counter.LatencyPerSecond
         server.Counter.Mutex.RUnlock()
         gocv.PutText(
             &mat,
@@ -88,6 +89,5 @@ func RunServer(server *Server) {
         window.IMShow(mat)
         window.WaitKey(1)
         _ = mat.Close()
-        server.FrameMutex.RUnlock()
     }
 }

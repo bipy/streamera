@@ -10,8 +10,8 @@ type SpeedCounter struct {
     ByteCount      int64
     LastTime       int64
     SpeedPerSecond int64
-    PingRealTime   int64
-    PingPerSecond  int64
+    LatencyRealTime   int64
+    LatencyPerSecond  int64
     Mutex          sync.RWMutex
 }
 
@@ -20,8 +20,8 @@ func NewSpeedCounter() *SpeedCounter {
         ByteCount:      0,
         LastTime:       time.Now().UnixMicro(),
         SpeedPerSecond: 0,
-        PingRealTime:   1000,
-        PingPerSecond:  1000,
+        LatencyRealTime:   1000,
+        LatencyPerSecond:  1000,
         Mutex:          sync.RWMutex{},
     }
     return counter
@@ -58,10 +58,10 @@ func calcSpeed(counter *SpeedCounter) {
     }
 }
 
-func updatePing(counter *SpeedCounter) {
+func updateLatency(counter *SpeedCounter) {
     for {
         counter.Mutex.Lock()
-        counter.PingPerSecond = counter.PingRealTime
+        counter.LatencyPerSecond = counter.LatencyRealTime
         counter.Mutex.Unlock()
 
         time.Sleep(time.Second)

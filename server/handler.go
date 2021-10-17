@@ -20,6 +20,7 @@ func runListener(server *Server) {
             fmt.Println(common.Red("broken connection " + err.Error()))
             continue
         }
+        go sendTimeStamp(conn)
         go handleConn(server, conn)
     }
 }
@@ -71,10 +72,28 @@ func handleConn(server *Server, conn net.Conn) {
         server.FrameMutex.Unlock()
 
         server.Counter.Mutex.Lock()
-        server.Counter.PingRealTime = curTime - recvTime
+        server.Counter.LatencyRealTime = (curTime - recvTime) >> 1
         server.Counter.ByteCount += length + common.HeadPacketSize
         server.Counter.Mutex.Unlock()
     }
 }
 
+func sendTimeStamp(conn net.Conn) {
+    writer := bufio.NewWriter(conn)
+    for {
+        time.Sleep(time.Millisecond << 7)
 
+        timePkt := make([]byte, common.TimeStampPacketSize)
+        binary.LittleEndian.PutUint64(timePkt, uint64(time.Now().UnixMicro()))
+
+        _, err := writer.Write(timePkt)
+        if err != nil {
+            return
+        }
+
+        err = writer.Flush()
+        if err != nil {
+            return
+        }
+    }
+}

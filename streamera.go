@@ -47,7 +47,7 @@ func serverModeInit() {
 
 func usage() {
     _, _ = fmt.Fprintf(os.Stderr, `
-Version: 1.1
+Version: 1.2
 Usage: socketTest [-h] [-c config]
 Options:
   -h

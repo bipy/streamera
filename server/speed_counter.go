@@ -34,7 +34,7 @@ func getHumanReadableSpeed(bps int64) string {
     return fmt.Sprintf("%.3f Mbps", float64(bps)/1e6)
 }
 
-func getHumanReadablePing(ping int64) string {
+func getHumanReadableTime(ping int64) string {
     if ping >= 1e9 {
         return fmt.Sprintf("999+ ms")
     }

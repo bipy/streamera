@@ -66,7 +66,7 @@ func RunServer(server *Server) {
         server.FrameMutex.RUnlock()
         server.Counter.Mutex.RLock()
         curSpeed := server.Counter.SpeedPerSecond
-        curPing := server.Counter.LatencyPerSecond
+        curLatency := server.Counter.LatencyPerSecond
         server.Counter.Mutex.RUnlock()
         gocv.PutText(
             &mat,
@@ -79,7 +79,7 @@ func RunServer(server *Server) {
         )
         gocv.PutText(
             &mat,
-            fmt.Sprintf("Ping: %s", getHumanReadablePing(curPing)),
+            fmt.Sprintf("Latency: %s", getHumanReadableTime(curLatency)),
             image.Point{X: 50, Y: 100},
             gocv.FontHersheySimplex,
             1,

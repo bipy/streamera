@@ -6,7 +6,7 @@ import (
     "image/jpeg"
 )
 
-const jpegQuality = 25
+const jpegQuality = 50
 
 var jpegOption = &jpeg.Options{Quality: jpegQuality}
 

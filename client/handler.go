@@ -23,6 +23,7 @@ func retry(client *Client) {
     }
     client.TCPConn = conn
     go handleSend(client)
+    go handleReceive(client)
 }
 
 func handleSend(client *Client) {
@@ -65,8 +66,8 @@ func handleReceive(client *Client) {
     for {
         _, err := io.ReadFull(reader, timeStamp)
         if err != nil {
-            fmt.Println(common.Red(client.TCPConn.RemoteAddr().String() + " Down! " + err.Error()))
-            break
+            fmt.Println(common.Red("Packet Receive Failed! " + err.Error()))
+            return
         }
         curTime := time.Now().UnixMicro()
         recvTime := int64(binary.LittleEndian.Uint64(timeStamp))

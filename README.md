@@ -2,7 +2,7 @@
 
 <p align="center">
 
-<img src="resources/logo.png"/>
+<img src="assets/logo.png"/>
 
 <h3 align="center">Term Project of Computer Networking</h3>
 
@@ -47,6 +47,10 @@
 - **Thread Safe**
 
     streamera uses golang as the main programming language: goroutine, channel and mutex are widely used in streamera. Thus, streamera has high performance and stability while keeping thread safe.
+
+## Screenshot
+
+![](assets/screenshot.jpg)
 
 ## How to Install
 

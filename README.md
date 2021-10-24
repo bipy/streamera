@@ -8,6 +8,8 @@
 
 <div align="center">
 
+![Go Report Card](https://goreportcard.com/badge/github.com/bipy/streamera)
+
 **streamera** is a Stream Camera based on TCP, which contains **client mode** and **server mode**.
 
 </div></p>

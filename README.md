@@ -4,8 +4,6 @@
 
 <img src="assets/logo.png"/>
 
-<h3 align="center">Term Project of Computer Networking</h3>
-
 <div align="center">
 
 ![Go Report Card](https://goreportcard.com/badge/github.com/bipy/streamera)
